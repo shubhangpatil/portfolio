@@ -1,0 +1,12 @@
+﻿[build]
+  publish = "."
+  
+[[redirects]]
+  from = "/tracker"
+  to = "/tracker.html"
+  status = 200
+
+[[redirects]]
+  from = "/tracker/"
+  to = "/tracker.html"
+  status = 200
