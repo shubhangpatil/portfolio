@@ -1,0 +1,604 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Placement Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<title>Placement Tracker — Shubhang Patil</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#050508;
+  --bg2:#0a0a12;
+  --bg3:#0d0d1a;
+  --blue:#00d4ff;
+  --blue2:#0099cc;
+  --purple:#7c3aed;
+  --purple2:#a855f7;
+  --cyan:#22d3ee;
+  --white:#f0f4ff;
+  --muted:#8892a4;
+  --border:rgba(0,212,255,0.12);
+  --glass:rgba(0,212,255,0.04);
+  --font-mono:'JetBrains Mono',monospace;
+  --font-display:'Syne',sans-serif;
+  --font-body:'Space Grotesk',sans-serif;
+  --green:#10b981;
+  --yellow:#fbbf24;
+  --red:#ef4444;
+}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--white);
+  font-family:var(--font-body);
+  line-height:1.6;
+  padding:2rem 1rem;
+  max-width:1400px;
+  margin:0 auto;
+}
+header{
+  text-align:center;
+  margin-bottom:3rem;
+  padding-bottom:2rem;
+  border-bottom:1px solid var(--border);
+}
+h1{
+  font-family:var(--font-display);
+  font-size:clamp(2rem,5vw,3.5rem);
+  font-weight:800;
+  letter-spacing:-.02em;
+  margin-bottom:0.5rem;
+}
+.gradient-text{
+  background:linear-gradient(135deg,var(--blue),var(--purple2));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.subtitle{
+  font-family:var(--font-mono);
+  font-size:0.85rem;
+  color:var(--muted);
+  letter-spacing:0.06em;
+}
+.controls{
+  display:flex;
+  gap:1rem;
+  justify-content:center;
+  flex-wrap:wrap;
+  margin-bottom:2rem;
+}
+.btn{
+  padding:0.6rem 1.2rem;
+  border:1px solid var(--border);
+  border-radius:6px;
+  background:var(--glass);
+  color:var(--cyan);
+  font-family:var(--font-mono);
+  font-size:0.75rem;
+  letter-spacing:0.06em;
+  cursor:pointer;
+  transition:all 0.2s;
+  text-decoration:none;
+  display:inline-block;
+}
+.btn:hover{
+  background:rgba(0,212,255,0.1);
+  border-color:var(--cyan);
+}
+.btn.primary{
+  background:linear-gradient(135deg,var(--blue2),var(--purple));
+  color:#fff;
+  border:none;
+}
+.btn.primary:hover{
+  background:linear-gradient(135deg,var(--blue),var(--purple2));
+}
+.section{
+  margin-bottom:3rem;
+  padding:2rem;
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:12px;
+}
+.section-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:1.5rem;
+  padding-bottom:1rem;
+  border-bottom:1px solid var(--border);
+  flex-wrap:wrap;
+  gap:1rem;
+}
+.section-title{
+  font-family:var(--font-display);
+  font-size:1.5rem;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  gap:0.5rem;
+}
+.section-badge{
+  display:inline-block;
+  padding:0.25rem 0.6rem;
+  background:var(--glass);
+  border:1px solid var(--border);
+  border-radius:100px;
+  font-family:var(--font-mono);
+  font-size:0.65rem;
+  color:var(--cyan);
+  letter-spacing:0.08em;
+}
+.week-block{
+  margin-bottom:2rem;
+  padding:1.5rem;
+  background:var(--bg3);
+  border-radius:8px;
+  border:1px solid var(--border);
+}
+.week-title{
+  font-family:var(--font-mono);
+  font-size:0.85rem;
+  color:var(--purple2);
+  letter-spacing:0.1em;
+  margin-bottom:0.8rem;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.progress-bar{
+  height:4px;
+  background:rgba(255,255,255,0.08);
+  border-radius:2px;
+  overflow:hidden;
+  margin-bottom:1rem;
+}
+.progress-fill{
+  height:100%;
+  background:linear-gradient(90deg,var(--purple),var(--cyan));
+  border-radius:2px;
+  transition:width 0.3s;
+}
+.topic-list{
+  display:flex;
+  flex-direction:column;
+  gap:0.5rem;
+}
+.topic-item{
+  display:flex;
+  align-items:center;
+  gap:0.8rem;
+  padding:0.6rem 0.8rem;
+  background:var(--bg);
+  border-radius:6px;
+  transition:all 0.2s;
+}
+.topic-item:hover{
+  background:var(--glass);
+}
+.topic-item input[type="checkbox"]{
+  width:18px;
+  height:18px;
+  accent-color:var(--cyan);
+  cursor:pointer;
+}
+.topic-item label{
+  flex:1;
+  font-size:0.85rem;
+  cursor:pointer;
+  user-select:none;
+}
+.topic-item.done label{
+  text-decoration:line-through;
+  color:var(--muted);
+}
+.app-list{
+  display:grid;
+  gap:1rem;
+}
+.app-card{
+  padding:1.2rem;
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:8px;
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:1rem;
+  align-items:center;
+}
+.app-info{
+  display:flex;
+  flex-direction:column;
+  gap:0.3rem;
+}
+.app-company{
+  font-weight:600;
+  font-size:1rem;
+  color:var(--white);
+}
+.app-role{
+  font-size:0.8rem;
+  color:var(--muted);
+}
+.app-meta{
+  font-family:var(--font-mono);
+  font-size:0.7rem;
+  color:var(--muted);
+  margin-top:0.2rem;
+}
+.app-actions{
+  display:flex;
+  gap:0.5rem;
+  align-items:center;
+}
+.status-select{
+  padding:0.4rem 0.8rem;
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:6px;
+  color:var(--white);
+  font-family:var(--font-mono);
+  font-size:0.7rem;
+  cursor:pointer;
+}
+.status-select.applied{color:var(--muted);}
+.status-select.oa{color:var(--yellow);}
+.status-select.interview{color:var(--cyan);}
+.status-select.offer{color:var(--green);}
+.status-select.rejected{color:var(--red);}
+.btn-icon{
+  width:32px;
+  height:32px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:transparent;
+  border:1px solid var(--border);
+  border-radius:6px;
+  color:var(--muted);
+  cursor:pointer;
+  transition:all 0.2s;
+}
+.btn-icon:hover{
+  color:var(--red);
+  border-color:var(--red);
+}
+.add-form{
+  display:grid;
+  grid-template-columns:1fr 1fr auto;
+  gap:0.8rem;
+  margin-bottom:1.5rem;
+  padding:1.2rem;
+  background:var(--bg3);
+  border-radius:8px;
+}
+.add-form input{
+  padding:0.6rem 0.8rem;
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:6px;
+  color:var(--white);
+  font-family:var(--font-body);
+  font-size:0.85rem;
+}
+.add-form input::placeholder{
+  color:var(--muted);
+  opacity:0.6;
+}
+.add-form input:focus{
+  outline:none;
+  border-color:var(--cyan);
+}
+.prep-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:1.5rem;
+}
+.prep-card{
+  padding:1.5rem;
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:8px;
+}
+.prep-card h3{
+  font-size:1rem;
+  margin-bottom:1rem;
+  color:var(--cyan);
+}
+.prep-count{
+  font-family:var(--font-mono);
+  font-size:2rem;
+  font-weight:700;
+  color:var(--purple2);
+  margin-bottom:0.5rem;
+}
+.prep-label{
+  font-size:0.75rem;
+  color:var(--muted);
+  letter-spacing:0.06em;
+}
+.stats-row{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+  gap:1rem;
+  margin-bottom:2rem;
+}
+.stat-box{
+  padding:1rem;
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:8px;
+  text-align:center;
+}
+.stat-num{
+  font-family:var(--font-display);
+  font-size:2rem;
+  font-weight:800;
+  background:linear-gradient(135deg,var(--cyan),var(--purple2));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.stat-label{
+  font-family:var(--font-mono);
+  font-size:0.65rem;
+  color:var(--muted);
+  letter-spacing:0.08em;
+  margin-top:0.3rem;
+}
+.empty-state{
+  text-align:center;
+  padding:3rem 1rem;
+  color:var(--muted);
+  font-size:0.85rem;
+}
+@media(max-width:768px){
+  .add-form{
+    grid-template-columns:1fr;
+  }
+  .app-card{
+    grid-template-columns:1fr;
+  }
+}
+</style>
+<header>
+  <h1>Placement Season <span class="gradient-text">Tracker</span</h1>
+  <p class="subtitle">SHUBHANG PATIL — 2026 PLACEMENT PREP DASHBOARD</p>
+</header>
+<div class="controls">
+  <button class="btn" onclick="exportData()">EXPORT BACKUP</button>
+  <button class="btn" onclick="importData()">IMPORT DATA</button>
+  <button class="btn" onclick="resetData()">RESET ALL</button>
+  <a href="portfolio.html" class="btn primary">BACK TO PORTFOLIO</a>
+</div>
+<div class="stats-row">
+  <div class="stat-box">
+    <div class="stat-num" id="stat-dsa">0%</div>
+    <div class="stat-label">DSA PROGRESS</div>
+ </div>
+  <div class="stat-box">
+    <div class="stat-num" id="stat-apps">0</div>
+    <div class="stat-label">APPLICATIONS</div>
+ </div>
+  <div class="stat-box">
+    <div class="stat-num" id="stat-interviews">0</div>
+    <div class="stat-label">INTERVIEWS</div>
+ </div>
+  <div class="stat-box">
+    <div class="stat-num" id="stat-offers">0</div>
+    <div class="stat-label">OFFERS</div>
+ </div>
+</div>
+<div class="section">
+  <div class="section-header">
+    <h2 class="section-title">
+      DSA Progress
+      <span class="section-badge" id="dsa-badge">0/40 TOPICS</span>
+   </h2>
+ </div>
+  <div id="dsa-container</div>
+</div>
+<div class="section">
+  <div class="section-header">
+    <h2 class="section-title">
+      Job Applications
+      <span class="section-badge" id="apps-badge">0 COMPANIES</span>
+   </h2>
+ </div>
+  <div class="add-form">
+    <input type="text" id="company-input" placeholder="Company name">
+    <input type="text" id="role-input" placeholder="Role (e.g., SDE Intern)">
+    <button class="btn primary" onclick="addApplication()">ADD</button>
+ </div>
+  <div id="apps-container</div>
+</div>
+<div class="section">
+  <div class="section-header">
+    <h2 class="section-title">Interview Prep</h2>
+ </div>
+  <div class="prep-grid">
+    <div class="prep-card">
+      <h3>Mock Interviews</h3>
+      <div class="prep-count" id="mock-count">0</div>
+      <div class="prep-label">COMPLETED</div>
+      <button class="btn" style="margin-top:1rem;width:100%;" onclick="incrementMock()">LOG MOCK</button>
+   </div>
+    <div class="prep-card">
+      <h3>Behavioral Questions</h3>
+      <div class="prep-count" id="behavioral-count">0</div>
+      <div class="prep-label">PRACTICED</div>
+      <button class="btn" style="margin-top:1rem;width:100%;" onclick="incrementBehavioral()">LOG PRACTICE</button>
+   </div>
+    <div class="prep-card">
+      <h3>System Design</h3>
+      <div class="prep-count" id="sysdesign-count">0</div>
+      <div class="prep-label">PROBLEMS</div>
+      <button class="btn" style="margin-top:1rem;width:100%;" onclick="incrementSysDesign()">LOG PROBLEM</button>
+   </div>
+ </div>
+</div>
+<script>
+const DSA_CURRICULUM = [
+  {week:1,title:'WEEK 1 — ARRAYS AND STRINGS',topics:[
+    'Array basics and traversal','Two pointer technique intro','String manipulation basics','Basic sliding window','Array reversal patterns'
+  ]},
+  {week:2,title:'WEEK 2 — TWO POINTERS AND SLIDING WINDOW',topics:[
+    'Two pointer patterns','Fixed-size sliding window','Variable-size sliding window','Prefix sum basics','Subarray problems'
+  ]},
+  {week:3,title:'WEEK 3 — HASHING AND PREFIX SUMS',topics:[
+    'Hash map basics','Frequency counting','Two sum variations','Prefix sum advanced','Subarray sum problems'
+  ]},
+  {week:4,title:'WEEK 4 — RECURSION',topics:[
+    'Recursion fundamentals','Base cases and termination','Simple recursive problems','Recursion tree visualization','Backtracking intro'
+  ]},
+  {week:5,title:'WEEK 5 — STACKS AND QUEUES',topics:[
+    'Stack operations and patterns','Queue operations and patterns','Monotonic stack','Next greater element','Valid parentheses problems'
+  ]},
+  {week:6,title:'WEEK 6 — LINKED LISTS',topics:[
+    'Linked list basics','Two pointer in linked lists','Reversing linked lists','Cycle detection','Merge operations'
+  ]},
+  {week:7,title:'WEEK 7 — BINARY SEARCH AND TREES',topics:[
+    'Binary search fundamentals','Search space patterns','Binary tree traversals','Tree properties and depth','Basic BST operations'
+  ]},
+  {week:8,title:'WEEK 8 — REVISION AND PRACTICE',topics:[
+    'Timed practice set 1','Timed practice set 2','Mixed problem revision','Weak area focus','Mock assessment'
+  ]}
+];
+let state = {dsa:{},apps:[],prep:{mock:0,behavioral:0,sysdesign:0}};
+function loadState(){
+  try{
+    const saved = localStorage.getItem('placement-tracker');
+    if(saved) state = JSON.parse(saved);
+  }catch(e){}
+}
+function saveState(){
+  try{
+    localStorage.setItem('placement-tracker',JSON.stringify(state));
+    updateStats();
+  }catch(e){}
+}
+function renderDSA(){
+  const container = document.getElementById('dsa-container');
+  container.innerHTML = '';
+  let total=0,done=0;
+  DSA_CURRICULUM.forEach(week=>{
+    const weekDiv = document.createElement('div');
+    weekDiv.className = 'week-block';
+    const weekDone = week.topics.filter(t=>state.dsa[t]).length;
+    const weekTotal = week.topics.length;
+    total += weekTotal;
+    done += weekDone;
+    const pct = Math.round((weekDone/weekTotal)*100);
+    weekDiv.innerHTML = '<div class="week-title"><span>'+week.title+'</span><span>'+weekDone+'/'+weekTotal+'</span</div><div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%</div</div><div class="topic-list">'+week.topics.map(t=>{
+      const id = 'topic-'+t.replace(/[^a-z0-9]/gi,'');
+      const checked = state.dsa[t]?'checked':'';
+      const doneClass = state.dsa[t]?'done':'';
+      return '<div class="topic-item '+doneClass+'"><input type="checkbox" id="'+id+'" '+checked+' onchange="toggleTopic(\''+t.replace(/'/g,"\\'")+'\')"><label for="'+id+'">'+t+'</label</div>';
+    }).join('')+</div>';
+    container.appendChild(weekDiv);
+  });
+  document.getElementById('dsa-badge').textContent = done+'/'+total+' TOPICS';
+}
+function toggleTopic(topic){
+  state.dsa[topic] = !state.dsa[topic];
+  saveState();
+  renderDSA();
+}
+function renderApps(){
+  const container = document.getElementById('apps-container');
+  if(!state.apps.length){
+    container.innerHTML = '<div class="empty-state">No applications yet. Add your first one above</div>';
+  }else{
+    container.innerHTML = '<div class="app-list">'+state.apps.map((app,i)=>{
+      return '<div class="app-card"><div class="app-info"><div class="app-company">'+app.company+'</div><div class="app-role">'+app.role+'</div><div class="app-meta">Applied '+app.date+'</div</div><div class="app-actions"><select class="status-select '+app.status+'" onchange="updateStatus('+i+',this.value)"><option value="applied" '+(app.status==='applied'?'selected':'')+'>Applied</option><option value="oa" '+(app.status==='oa'?'selected':'')+'>OA</option><option value="interview" '+(app.status==='interview'?'selected':'')+'>Interview</option><option value="offer" '+(app.status==='offer'?'selected':'')+'>Offer</option><option value="rejected" '+(app.status==='rejected'?'selected':'')+'>Rejected</option</select><button class="btn-icon" onclick="deleteApp('+i+')">DEL</button</div</div>';
+    }).join('')+</div>';
+  }
+  document.getElementById('apps-badge').textContent = state.apps.length+' COMPANIES';
+}
+function addApplication(){
+  const company = document.getElementById('company-input').value.trim();
+  const role = document.getElementById('role-input').value.trim();
+  if(!company||!role) return alert('Please fill both fields');
+  state.apps.push({company:company,role:role,status:'applied',date:new Date().toISOString().split('T')[0]});
+  document.getElementById('company-input').value='';
+  document.getElementById('role-input').value='';
+  saveState();
+  renderApps();
+}
+function updateStatus(idx,status){
+  state.apps[idx].status = status;
+  saveState();
+  renderApps();
+}
+function deleteApp(idx){
+  if(!confirm('Delete this application?')) return;
+  state.apps.splice(idx,1);
+  saveState();
+  renderApps();
+}
+function incrementMock(){state.prep.mock++;document.getElementById('mock-count').textContent=state.prep.mock;saveState();}
+function incrementBehavioral(){state.prep.behavioral++;document.getElementById('behavioral-count').textContent=state.prep.behavioral;saveState();}
+function incrementSysDesign(){state.prep.sysdesign++;document.getElementById('sysdesign-count').textContent=state.prep.sysdesign;saveState();}
+function updateStats(){
+  const totalTopics = DSA_CURRICULUM.reduce((s,w)=>s+w.topics.length,0);
+  const doneTopics = Object.values(state.dsa).filter(Boolean).length;
+  const dsaPct = Math.round((doneTopics/totalTopics)*100);
+  document.getElementById('stat-dsa').textContent = dsaPct+'%';
+  document.getElementById('stat-apps').textContent = state.apps.length;
+  document.getElementById('stat-interviews').textContent = state.apps.filter(a=>a.status==='interview').length;
+  document.getElementById('stat-offers').textContent = state.apps.filter(a=>a.status==='offer').length;
+  document.getElementById('mock-count').textContent = state.prep.mock;
+  document.getElementById('behavioral-count').textContent = state.prep.behavioral;
+  document.getElementById('sysdesign-count').textContent = state.prep.sysdesign;
+}
+function exportData(){
+  const blob = new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'placement-tracker-backup-'+new Date().toISOString().split('T')[0]+'.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+function importData(){
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'application/json';
+  input.onchange = e=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ev=>{
+      try{
+        state = JSON.parse(ev.target.result);
+        saveState();
+        renderDSA();
+        renderApps();
+        alert('Data imported successfully!');
+      }catch(err){
+        alert('Invalid backup file');
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+function resetData(){
+  if(!confirm('This will delete ALL tracker data. Continue?')) return;
+  state = {dsa:{},apps:[],prep:{mock:0,behavioral:0,sysdesign:0}};
+  saveState();
+  renderDSA();
+  renderApps();
+}
+loadState();
+renderDSA();
+renderApps();
+updateStats();
+</script>
+
+</body>
+</html>
